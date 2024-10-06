@@ -15,6 +15,21 @@ const Todo = () => {
         newdata.current.value = ''
     }
 
+    const handleDelete = (index) => {
+       let reducedTodo = [...data];
+       reducedTodo.splice(index, 1);
+
+       localStorage.setItem("task",JSON.stringify(reducedTodo))
+       setData(reducedTodo)
+    }
+
+    const editData = (index) => {
+        let edit = [...data];
+        edit[index] = prompt()
+        localStorage.setItem('task',JSON.stringify(edit))
+        setData(edit)
+    }
+
     useEffect(() => {
         let storedData = JSON.parse(localStorage.getItem("task"))
         if(storedData){
@@ -24,7 +39,10 @@ const Todo = () => {
 
     const handleInput = (event) => (event.key ==='Enter') && listData()
 
-    const clearData = () => localStorage.removeItem("task")
+    const clearData = () =>{
+        localStorage.removeItem("task")
+        setData([])
+    }
 
     return <div className='text-white  text-left mt-36'>
         <h1 className='text-2xl text-amber-500 mb-4'>TO-DO List</h1>
@@ -32,6 +50,7 @@ const Todo = () => {
             <div className='text-black '>
             <input type="text" ref={newdata}
             className='rounded px-2 w-72'
+            placeholder='Enter Your Task'
             onKeyPress={handleInput}/>
             </div>
             <button className='bg-blue-800 text-black 
@@ -49,13 +68,16 @@ const Todo = () => {
             <ul>
                 <h3 className='text-yellow-200'>List Of Task</h3>
                 {
-                data.map((item)=><li
+                data.map((items,index)=><li
                 className='border rounded-lg
                 bg-gray-400 text-left
                  px-4 my-2 shadow-sm shadow-white
                  flex justify-between items-center cursor-pointer'>
-                    {item}
-                    <i class="fa-solid fa-xmark cursor-pointer" ></i>
+                    {items}
+                    <div>
+                        <i class="fa-solid fa-pen-to-square" onClick={() => editData(index)}></i>
+                        <i class="fa-solid fa-xmark cursor-pointer pl-4" onClick={() => handleDelete(index) }></i>
+                    </div>
                 </li>)
                 }
             </ul>
